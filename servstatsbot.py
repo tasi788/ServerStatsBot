@@ -7,16 +7,10 @@ from datetime import datetime
 from subprocess import Popen, PIPE, STDOUT
 import operator
 import collections
-# import sys
+import os
+import sys
 import time
-# import threading
-# import random
 import telepot
-# from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardHide, ForceReply
-# from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-# from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto, InputTextMessageContent
-
-
 
 memorythreshold = 85  # If memory usage more this %
 poll = 300  # seconds
@@ -29,8 +23,19 @@ settingmemth = []
 setpolling = []
 graphstart = datetime.now()
 
-stopmarkup = {'keyboard': [['Stop']]}
+stopmarkup = {'keyboard': [['✋Stop']]}
 hide_keyboard = {'hide_keyboard': True}
+
+def bytes2human(n):
+    symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
+    prefix = {}
+    for i, s in enumerate(symbols):
+        prefix[s] = 1 << (i + 1) * 10
+    for s in reversed(symbols):
+        if n >= prefix[s]:
+            value = float(n) / prefix[s]
+            return '%.1f%s' % (value, s)
+    return "%sB" % n
 
 def clearall(chat_id):
     if chat_id in shellexecution:
@@ -68,19 +73,29 @@ class YourBot(telepot.Bot):
         content_type, chat_type, chat_id = telepot.glance(msg)
         # Do your stuff according to `content_type` ...
         print("Your chat_id:" + str(chat_id)) # this will tell you your chat_id
+        for part in psutil.disk_partitions(all=False):
+            if os.name == 'nt':
+                if 'cdrom' in part.opts or part.fstype == '':
+                    # skip cd-rom drives with no disk in it; they may raise
+                    # ENOENT, pop-up a Windows GUI error for a non-ready
+                    # partition or just hang.
+                    #cdrom or cant identify will be hang.
+                    continue
         if chat_id in adminchatid:  # Store adminchatid variable in tokens.py
             if content_type == 'text':
                 if msg['text'] == '/stats' and chat_id not in shellexecution:
                     bot.sendChatAction(chat_id, 'typing')
                     memory = psutil.virtual_memory()
                     disk = psutil.disk_usage('/')
+                    disk2 = psutil.disk_usage('/data')
                     boottime = datetime.fromtimestamp(psutil.boot_time())
                     now = datetime.now()
                     timedif = "Online for: %.1f Hours" % (((now - boottime).total_seconds()) / 3600)
                     memtotal = "Total memory: %.2f GB " % (memory.total / 1000000000)
                     memavail = "Available memory: %.2f GB" % (memory.available / 1000000000)
                     memuseperc = "Used memory: " + str(memory.percent) + " %"
-                    diskused = "Disk used: " + str(disk.percent) + " %"
+                    diskused = "Disk1 (/): " + str(bytes2human(disk.free)) + " (" +str(disk.percent) + "%)"
+                    diskused2 = "Disk2 ("+ str(part.mountpoint)+"): " + str(bytes2human(disk2.free)) + " (" +str(disk2.percent) + "%)"
                     pids = psutil.pids()
                     pidsreply = ''
                     procs = {}
@@ -102,10 +117,11 @@ class YourBot(telepot.Bot):
                             memtotal + "\n" + \
                             memavail + "\n" + \
                             memuseperc + "\n" + \
-                            diskused + "\n\n" + \
+                            diskused + "\n" + \
+                            diskused2 + "\n\n" + \
                             pidsreply
                     bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
-                elif msg['text'] == "Stop":
+                elif msg['text'] == "Stop" or msg['text'] == "✋Stop":
                     clearall(chat_id)
                     bot.sendMessage(chat_id, "All operations stopped.", reply_markup=hide_keyboard)
                 elif msg['text'] == '/setpoll' and chat_id not in setpolling:
