@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
 from tokens import *
 import matplotlib
 matplotlib.use("Agg") # has to be before any other matplotlibs imports to set a "headless" backend
@@ -71,6 +73,8 @@ class YourBot(telepot.Bot):
 
     def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
+        #完全限定使用者id
+        user_id = msg['from']['id']
         # Do your stuff according to `content_type` ...
         print("Your chat_id:" + str(chat_id)) # this will tell you your chat_id
         for part in psutil.disk_partitions(all=False):
@@ -81,7 +85,7 @@ class YourBot(telepot.Bot):
                     # partition or just hang.
                     #cdrom or cant identify will be hang.
                     continue
-        if chat_id in adminchatid:  # Store adminchatid variable in tokens.py
+        if user_id in adminchatid:  # Store adminchatid variable in tokens.py
             if content_type == 'text':
                 if msg['text'] == '/stats' and chat_id not in shellexecution:
                     bot.sendChatAction(chat_id, 'typing')
@@ -121,7 +125,9 @@ class YourBot(telepot.Bot):
                             diskused2 + "\n\n" + \
                             pidsreply
                     bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
-                elif msg['text'] == "Stop" or msg['text'] == "✋Stop":
+                elif msg['text'] == "/about":
+                    bot.sendMessage(chat_id, 'v1.0\nToDo:\n-add Network Speed')
+                elif msg['text'] == "Stop" or msg['text'] == u"✋Stop":
                     clearall(chat_id)
                     bot.sendMessage(chat_id, "All operations stopped.", reply_markup=hide_keyboard)
                 elif msg['text'] == '/setpoll' and chat_id not in setpolling:
