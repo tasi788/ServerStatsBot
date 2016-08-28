@@ -85,50 +85,50 @@ class YourBot(telepot.Bot):
                     # partition or just hang.
                     #cdrom or cant identify will be hang.
                     continue
-        if user_id in adminchatid:  # Store adminchatid variable in tokens.py
-            if content_type == 'text':
-                if msg['text'] == '/stats' and chat_id not in shellexecution:
-                    bot.sendChatAction(chat_id, 'typing')
-                    memory = psutil.virtual_memory()
-                    disk = psutil.disk_usage('/')
-                    disk2 = psutil.disk_usage('/data')
-                    boottime = datetime.fromtimestamp(psutil.boot_time())
-                    now = datetime.now()
-                    timedif = "運作時間: %.1f 小時" % (((now - boottime).total_seconds()) / 3600)
-                    memtotal = "總記憶體: %.2f GB " % (memory.total / 1000000000)
-                    memavail = "可用記憶體: %.2f GB" % (memory.available / 1000000000)
-                    memuseperc = "已使用: " + str(memory.percent) + " %"
-                    diskused = "硬碟掛載1 (/): " + str(bytes2human(disk.free)) + " (" +str(disk.percent) + "%)"
-                    diskused2 = "硬碟掛載2 ("+ str(part.mountpoint)+"): " + str(bytes2human(disk2.free)) + " (" +str(disk2.percent) + "%)"
-                    pids = psutil.pids()
-                    pidsreply = ''
-                    procs = {}
-                    for pid in pids:
-                        p = psutil.Process(pid)
-                        try:
-                            pmem = p.memory_percent()
-                            if pmem > 0.5:
-                                if p.name() in procs:
-                                    procs[p.name()] += pmem
-                                else:
-                                    procs[p.name()] = pmem
-                        except:
-                            continue
-                    sortedprocs = sorted(procs.items(), key=operator.itemgetter(1), reverse=True)
-                    for proc in sortedprocs:
-                        pidsreply += proc[0] + " " + ("%.2f" % proc[1]) + " %\n"
-                    reply = timedif + "\n" + \
-                            memtotal + "\n" + \
-                            memavail + "\n" + \
-                            memuseperc + "\n" + \
-                            diskused + "\n" + \
-                            diskused2 + "\n\n" + \
-                            "CPU使用率:\n" + \
-                            pidsreply
-                    bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
-                elif msg['text'] == "/about":
-                    bot.sendMessage(chat_id, 'v1.0\nToDo:\n-add Network Speed')
-                elif msg['text'] == "Stop" or msg['text'] == "✋停止":
+        if content_type == 'text':
+            if msg['text'] == '/stats' and chat_id not in shellexecution:
+                bot.sendChatAction(chat_id, 'typing')
+                memory = psutil.virtual_memory()
+                disk = psutil.disk_usage('/')
+                disk2 = psutil.disk_usage('/data')
+                boottime = datetime.fromtimestamp(psutil.boot_time())
+                now = datetime.now()
+                timedif = "運作時間: %.1f 小時" % (((now - boottime).total_seconds()) / 3600)
+                memtotal = "總記憶體: %.2f GB " % (memory.total / 1000000000)
+                memavail = "可用記憶體: %.2f GB" % (memory.available / 1000000000)
+                memuseperc = "已使用: " + str(memory.percent) + " %"
+                diskused = "硬碟掛載1 (/): " + str(bytes2human(disk.free)) + " (" +str(disk.percent) + "%)"
+                diskused2 = "硬碟掛載2 ("+ str(part.mountpoint)+"): " + str(bytes2human(disk2.free)) + " (" +str(disk2.percent) + "%)"
+                pids = psutil.pids()
+                pidsreply = ''
+                procs = {}
+                for pid in pids:
+                    p = psutil.Process(pid)
+                    try:
+                        pmem = p.memory_percent()
+                        if pmem > 0.5:
+                            if p.name() in procs:
+                                procs[p.name()] += pmem
+                            else:
+                                procs[p.name()] = pmem
+                    except:
+                        continue
+                sortedprocs = sorted(procs.items(), key=operator.itemgetter(1), reverse=True)
+                for proc in sortedprocs:
+                    pidsreply += proc[0] + " " + ("%.2f" % proc[1]) + " %\n"
+                reply = timedif + "\n" + \
+                        memtotal + "\n" + \
+                        memavail + "\n" + \
+                        memuseperc + "\n" + \
+                        diskused + "\n" + \
+                        diskused2 + "\n\n" + \
+                        "CPU使用率:\n" + \
+                        pidsreply
+                bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
+            elif msg['text'] == "/about":
+                bot.sendMessage(chat_id, 'v1.0\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\nToDo:\n-add Network Speed')
+            elif user_id in adminchatid:  # Store adminchatid variable in tokens.py
+                if msg['text'] == "Stop" or msg['text'] == u"✋停止":
                     clearall(chat_id)
                     bot.sendMessage(chat_id, "終止操作", reply_markup=hide_keyboard)
                 elif msg['text'] == '/setpoll' and chat_id not in setpolling:

@@ -85,49 +85,49 @@ class YourBot(telepot.Bot):
                     # partition or just hang.
                     #cdrom or cant identify will be hang.
                     continue
-        if user_id in adminchatid:  # Store adminchatid variable in tokens.py
-            if content_type == 'text':
-                if msg['text'] == '/stats' and chat_id not in shellexecution:
-                    bot.sendChatAction(chat_id, 'typing')
-                    memory = psutil.virtual_memory()
-                    disk = psutil.disk_usage('/')
-                    disk2 = psutil.disk_usage('/data')
-                    boottime = datetime.fromtimestamp(psutil.boot_time())
-                    now = datetime.now()
-                    timedif = "Online for: %.1f Hours" % (((now - boottime).total_seconds()) / 3600)
-                    memtotal = "Total memory: %.2f GB " % (memory.total / 1000000000)
-                    memavail = "Available memory: %.2f GB" % (memory.available / 1000000000)
-                    memuseperc = "Used memory: " + str(memory.percent) + " %"
-                    diskused = "Disk1 (/): " + str(bytes2human(disk.free)) + " (" +str(disk.percent) + "%)"
-                    diskused2 = "Disk2 ("+ str(part.mountpoint)+"): " + str(bytes2human(disk2.free)) + " (" +str(disk2.percent) + "%)"
-                    pids = psutil.pids()
-                    pidsreply = ''
-                    procs = {}
-                    for pid in pids:
-                        p = psutil.Process(pid)
-                        try:
-                            pmem = p.memory_percent()
-                            if pmem > 0.5:
-                                if p.name() in procs:
-                                    procs[p.name()] += pmem
-                                else:
-                                    procs[p.name()] = pmem
-                        except:
-                            print("Hm")
-                    sortedprocs = sorted(procs.items(), key=operator.itemgetter(1), reverse=True)
-                    for proc in sortedprocs:
-                        pidsreply += proc[0] + " " + ("%.2f" % proc[1]) + " %\n"
-                    reply = timedif + "\n" + \
-                            memtotal + "\n" + \
-                            memavail + "\n" + \
-                            memuseperc + "\n" + \
-                            diskused + "\n" + \
-                            diskused2 + "\n\n" + \
-                            pidsreply
-                    bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
-                elif msg['text'] == "/about":
-                    bot.sendMessage(chat_id, 'v1.0\nToDo:\n-add Network Speed')
-                elif msg['text'] == "Stop" or msg['text'] == u"✋Stop":
+        if content_type == 'text':
+            if msg['text'] == '/stats' and chat_id not in shellexecution:
+                bot.sendChatAction(chat_id, 'typing')
+                memory = psutil.virtual_memory()
+                disk = psutil.disk_usage('/')
+                disk2 = psutil.disk_usage('/data')
+                boottime = datetime.fromtimestamp(psutil.boot_time())
+                now = datetime.now()
+                timedif = "Online for: %.1f Hours" % (((now - boottime).total_seconds()) / 3600)
+                memtotal = "Total memory: %.2f GB " % (memory.total / 1000000000)
+                memavail = "Available memory: %.2f GB" % (memory.available / 1000000000)
+                memuseperc = "Used memory: " + str(memory.percent) + " %"
+                diskused = "Disk1 (/): " + str(bytes2human(disk.free)) + " (" +str(disk.percent) + "%)"
+                diskused2 = "Disk2 ("+ str(part.mountpoint)+"): " + str(bytes2human(disk2.free)) + " (" +str(disk2.percent) + "%)"
+                pids = psutil.pids()
+                pidsreply = ''
+                procs = {}
+                for pid in pids:
+                    p = psutil.Process(pid)
+                    try:
+                        pmem = p.memory_percent()
+                        if pmem > 0.5:
+                            if p.name() in procs:
+                                procs[p.name()] += pmem
+                            else:
+                                procs[p.name()] = pmem
+                    except:
+                        print("Hm")
+                sortedprocs = sorted(procs.items(), key=operator.itemgetter(1), reverse=True)
+                for proc in sortedprocs:
+                    pidsreply += proc[0] + " " + ("%.2f" % proc[1]) + " %\n"
+                reply = timedif + "\n" + \
+                        memtotal + "\n" + \
+                        memavail + "\n" + \
+                        memuseperc + "\n" + \
+                        diskused + "\n" + \
+                        diskused2 + "\n\n" + \
+                        pidsreply
+                bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
+            elif msg['text'] == "/about":
+                bot.sendMessage(chat_id, 'v1.0\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\nToDo:\n-add Network Speed')
+            elif user_id in adminchatid:  # Store adminchatid variable in tokens.py
+                if msg['text'] == "Stop" or msg['text'] == u"✋Stop":
                     clearall(chat_id)
                     bot.sendMessage(chat_id, "All operations stopped.", reply_markup=hide_keyboard)
                 elif msg['text'] == '/setpoll' and chat_id not in setpolling:
@@ -146,10 +146,10 @@ class YourBot(telepot.Bot):
                             1/0
                     except:
                         bot.sendMessage(chat_id, "Please send a proper numeric value higher than 10.")
-                elif msg['text'] == "/shell" and chat_id not in shellexecution:
+                elif msg['text'] == "/shell" and user_id not in shellexecution:
                     bot.sendMessage(chat_id, "Send me a shell command to execute", reply_markup=stopmarkup)
                     shellexecution.append(chat_id)
-                elif msg['text'] == "/setmem" and chat_id not in settingmemth:
+                elif msg['text'] == "/setmem" and user_id not in settingmemth:
                     bot.sendChatAction(chat_id, 'typing')
                     settingmemth.append(chat_id)
                     bot.sendMessage(chat_id, "Send me a new memory threshold to monitor?", reply_markup=stopmarkup)
