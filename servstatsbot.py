@@ -134,7 +134,7 @@ class YourBot(telepot.Bot):
                         pidsreply
                 bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
             elif msg['text'] == "/about":
-                bot.sendMessage(chat_id, 'v1.2\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\n\change log:\nEnhance log\nToDo:\n-add Network Speed')
+                bot.sendMessage(chat_id, 'v1.2\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\nChange log:\nEnhance log\n\nToDo:\n-add Network Speed')
             elif user_id in adminchatid:  # Store adminchatid variable in tokens.py
                 if msg['text'] == "Stop" or msg['text'] == u"✋Stop":
                     clearall(chat_id)
