@@ -76,7 +76,16 @@ class YourBot(telepot.Bot):
         #完全限定使用者id
         user_id = msg['from']['id']
         # Do your stuff according to `content_type` ...
-        print("Your chat_id:" + str(chat_id)) # this will tell you your chat_id
+        try:
+            username = msg['from']['first_name'] +' '+ msg['from']['last_name']
+        except:
+            username = msg['from']['first_name']
+        content = str(username.encode('utf-8'))+'('+str(user_id)+')'+'說：'+str(msg['text'].encode('utf-8'))
+        log = '['+str(time.strftime("%Y-%m-%d %I:%M:%S"))+'] '+content+'\n'
+        f = open('server.txt', 'a')
+        f.write(log)
+        print log
+        f.close()
         for part in psutil.disk_partitions(all=False):
             if os.name == 'nt':
                 if 'cdrom' in part.opts or part.fstype == '':
