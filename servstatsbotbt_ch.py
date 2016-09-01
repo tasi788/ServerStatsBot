@@ -184,8 +184,12 @@ class YourBot(telepot.Bot):
 					tmperiod = "Last %.2f hours" % ((datetime.now() - graphstart).total_seconds() / 3600)
 					bot.sendPhoto(chat_id, plotmemgraph(memlist, xaxis, tmperiod))
 		elif content_type == 'document':
+			bot.sendChatAction(chat_id, 'typing')
+			bot.sendMessage(chat_id, "下載中...")
 			content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
-			bot.download_file(msg['document']['file_id'], './'+str(msg['document']['file_name']))
+			bot.download_file(msg['document']['file_id'], '/data/download/torrent/'+str(msg['document']['file_name']))
+			bot.sendChatAction(chat_id, 'typing')
+			bot.sendMessage(chat_id, "已添加至下載列")
 		else:
 			content = str(username.encode('utf-8'))
 		log = '['+str(time.strftime("%Y-%m-%d %I:%M:%S"))+'] '+content+'\n'
