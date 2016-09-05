@@ -132,7 +132,7 @@ class YourBot(telepot.Bot):
 			elif msg['text'].startswith("/about"):
 				bot.sendMessage(chat_id, 'v1.2\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\nChange log:\nEnhance log\n\nToDo:\n-add Network Speed')
 			elif user_id in adminchatid:  # Store adminchatid variable in tokens.py
-				if msg['text'] == "Stop" or msg['text'] == u"✋停止":
+				if msg['text'].startswith("Stop") or msg['text'] == u"✋停止":
 					clearall(chat_id)
 					bot.sendMessage(chat_id, "終止操作", reply_markup=hide_keyboard)
 				elif msg['text'] == '/setpoll' and chat_id not in setpolling:
