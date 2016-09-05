@@ -90,7 +90,7 @@ class YourBot(telepot.Bot):
 					continue
 		if content_type == 'text':
 			content = str(username.encode('utf-8'))+'('+str(user_id)+')'+'說：'+str(msg['text'].encode('utf-8'))
-			if msg['text'] == '/stats' and chat_id not in shellexecution:
+			if msg['text'].startswith('/stats') and chat_id not in shellexecution:
 				bot.sendChatAction(chat_id, 'typing')
 				memory = psutil.virtual_memory()
 				disk = psutil.disk_usage('/')
@@ -129,7 +129,7 @@ class YourBot(telepot.Bot):
 						"CPU使用率:\n" + \
 						pidsreply
 				bot.sendMessage(chat_id, reply, disable_web_page_preview=True)
-			elif msg['text'] == "/about":
+			elif msg['text'].startswith("/about"):
 				bot.sendMessage(chat_id, 'v1.2\nGithub:\nhttps://github.com/tasi788/ServerStatsBot\nChange log:\nEnhance log\n\nToDo:\n-add Network Speed')
 			elif user_id in adminchatid:  # Store adminchatid variable in tokens.py
 				if msg['text'] == "Stop" or msg['text'] == u"✋停止":
@@ -179,7 +179,7 @@ class YourBot(telepot.Bot):
 						bot.sendMessage(chat_id, output, disable_web_page_preview=True)
 					else:
 						bot.sendMessage(chat_id, "沒有輸出m(._.)m", disable_web_page_preview=True)
-				elif msg['text'] == '/memgraph':
+				elif msg['text'].startswith('/memgraph'):
 					bot.sendChatAction(chat_id, 'typing')
 					tmperiod = "Last %.2f hours" % ((datetime.now() - graphstart).total_seconds() / 3600)
 					bot.sendPhoto(chat_id, plotmemgraph(memlist, xaxis, tmperiod))
