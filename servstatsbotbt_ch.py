@@ -183,19 +183,18 @@ class YourBot(telepot.Bot):
 					bot.sendChatAction(chat_id, 'typing')
 					tmperiod = "Last %.2f hours" % ((datetime.now() - graphstart).total_seconds() / 3600)
 					bot.sendPhoto(chat_id, plotmemgraph(memlist, xaxis, tmperiod))
-		elif content_type == 'document' and user_id in adminchatid :  # Store adminchatid variable in tokens.py
-			if '.torrent' not in msg['document']['file_name']:
-				content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
-				bot.sendMessage(chat_id, "咪(´･_･`) 這不是種子檔吧？")
-			else :
-				bot.sendChatAction(chat_id, 'typing')
-				bot.sendMessage(chat_id, "下載中...")
-				content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
-				bot.download_file(msg['document']['file_id'], '/data/download/torrent/'+str(msg['document']['file_name']))
-				bot.sendChatAction(chat_id, 'typing')
-				bot.sendMessage(chat_id, "已添加至下載列")
+				elif content_type == 'document':
+					if '.torrent' not in msg['document']['file_name']:
+						content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
+						bot.sendMessage(chat_id, "咪(´･_･`) 這不是種子檔吧？")
+					else :
+						bot.sendChatAction(chat_id, 'typing')
+						bot.sendMessage(chat_id, "下載中...")
+						content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
+						bot.download_file(msg['document']['file_id'], '/data/download/torrent/'+str(msg['document']['file_name']))
+						bot.sendChatAction(chat_id, 'typing')
+						bot.sendMessage(chat_id, "已添加至下載列")
 		else:
-			print 'else'
 			content = str(username.encode('utf-8'))+'send file '+str(msg['document']['file_name'])
 		log = '['+str(time.strftime("%Y-%m-%d %I:%M:%S"))+'] '+content+'\n'
 		f = open('ServerStatsBot.txt', 'a')
